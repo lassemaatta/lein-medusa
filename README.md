@@ -1,5 +1,7 @@
 # lein-medusa
 
+[![Clojars Project](https://img.shields.io/clojars/v/org.clojars.lassemaatta/lein-medusa.svg)](https://clojars.org/org.clojars.lassemaatta/lein-medusa)
+
 A simple Leiningen plugin which parses and visualizes your [re-frame](https://github.com/Day8/re-frame) project.
 
 At the moment supports graphing the subscription hierarchy into the [.dot](https://www.graphviz.org/) -format.

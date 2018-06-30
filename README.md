@@ -22,13 +22,13 @@ Use this for project-level plugins:
 
 Put `[lein-medusa "0.1.1"]` into the `:plugins` vector of your project.clj.
 
-Example usage (output as a map):
+Example usage (print result as a map to stdout):
 
     $ lein medusa
 
-Example usage (output using .dot -format):
+Example usage (write result in plantuml format to file):
 
-    $ lein medusa --graph --depth 2
+    $ lein medusa --graph --depth 4 --plantuml --output my_graph.plantuml
 
 ## License
 

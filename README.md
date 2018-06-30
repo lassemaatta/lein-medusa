@@ -30,6 +30,10 @@ Example usage (write result in plantuml format to file):
 
     $ lein medusa --graph --depth 4 --plantuml --output my_graph.plantuml
 
+## Known issues / limitations
+
+* There are several ways how libraries can be referenced in a `(ns)` declaration. We will most likely fail when parsing some of them.
+
 ## License
 
 Copyright © 2018

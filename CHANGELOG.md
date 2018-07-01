@@ -4,6 +4,7 @@ All notable changes to this project will be documented in this file. This change
 ## [Unreleased]
 ### Fixed
 - Correctly parse namespaces which refer to _npm_ or _javascript_ libraries, e.g. `(:require ["moment" as moment])`
+- Use `.` instead of `_` as namespace separator in `.dot` graphs
 
 ## 0.1.1 - 2018-06-30
 ### Fixed

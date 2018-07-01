@@ -49,10 +49,13 @@
 
   (testing "node->cluster"
     (let [node->cluster (partial dot/node->cluster 3)]
-      (is (= (node->cluster :db)
-             nil))
-      (is (= (node->cluster :a.some-ns/foo)
-             "a_some-ns")))))
+      (is (nil? (node->cluster :db)))
+      (is (= (node->cluster :a.some-ns/foo) "a.some-ns")))
+    (is (= (dot/node->cluster 1 :a.b.c.d/foo) "a"))
+    (is (= (dot/node->cluster 2 :a.b.c.d/foo) "a.b"))
+    (is (= (dot/node->cluster 3 :a.b.c.d/foo) "a.b.c"))
+    (is (= (dot/node->cluster 4 :a.b.c.d/foo) "a.b.c.d"))
+    (is (= (dot/node->cluster 5 :a.b.c.d/foo) "a.b.c.d"))))
 
 (deftest cluster-test
   (testing "cluster->descriptor"

@@ -91,7 +91,7 @@
                        (namespace)
                        (split-ns)
                        (take count)
-                       (string/join "_"))]
+                       (string/join "."))]
     ns))
 
 (s/fdef node->cluster

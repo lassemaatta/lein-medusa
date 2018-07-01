@@ -4,7 +4,7 @@
 
 A simple Leiningen plugin which parses and visualizes your [re-frame](https://github.com/Day8/re-frame) project.
 
-At the moment supports graphing the subscription hierarchy into the [.dot](https://www.graphviz.org/) -format.
+At the moment supports parsing the re-frame subscription hierarchy.
 
 Supported output formats (either to file or stdout):
   * EDN map
@@ -15,12 +15,12 @@ Supported output formats (either to file or stdout):
 
 Use this for user-level plugins:
 
-Put `[lein-medusa "0.1.1"]` into the `:plugins` vector of your `:user`
+Put `[lein-medusa "0.1.2-SNAPSHOT"]` into the `:plugins` vector of your `:user`
 profile.
 
 Use this for project-level plugins:
 
-Put `[lein-medusa "0.1.1"]` into the `:plugins` vector of your project.clj.
+Put `[lein-medusa "0.1.2-SNAPSHOT"]` into the `:plugins` vector of your project.clj.
 
 Example usage (print result as a map to stdout):
 

@@ -18,6 +18,13 @@
        (symbol? (first form))
        (= :as (second form))))
 
+(defn- js-spec?
+  [form]
+  "Returns true if form represents a libspec like [\"some-js-lib\" :as alias]"
+  (and (sequential? form)
+       (string? (first form))
+       (< 1 (count form))))
+
 (defn- kw-spec?
   "Returns true if form represents a libspec vector containing optional
   keyword arguments like [namespace :as alias] or
@@ -43,6 +50,7 @@
         (let [lib-name (lib-name prefix form)
               alias    (nth form 2)]
           [alias lib-name])
+        (js-spec? form) nil
         (kw-spec? form) nil
         (symbol? form) nil
         (keyword? form) nil

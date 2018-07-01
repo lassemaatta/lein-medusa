@@ -1,4 +1,4 @@
-(defproject org.clojars.lassemaatta/lein-medusa "0.1.1"
+(defproject org.clojars.lassemaatta/lein-medusa "0.1.2-SNAPSHOT"
   :description "Parse and export re-frame subscription graph"
   :url "https://github.com/lassemaatta/lein-medusa"
   :license {:name "Eclipse Public License"

@@ -41,6 +41,20 @@
           expected {}]
       (is (= aliases expected))))
 
+  (testing "[\"js-lib\" :as SomeLib] provides no aliases"
+    (let [decl     '(ns some.namespace.core
+                      (:require ["some-js-lib" :as SomeJsLib]))
+          aliases  (ns-parse/aliases-from-ns-decl decl)
+          expected {}]
+      (is (= aliases expected))))
+
+  (testing "[\"js-lib\" :refer (SomeClass)] provides no aliases"
+    (let [decl     '(ns some.namespace.core
+                      (:require ["some-js-lib" :refer (SomeJsClass)]))
+          aliases  (ns-parse/aliases-from-ns-decl decl)
+          expected {}]
+      (is (= aliases expected))))
+
   (testing "[lib :as alias] provides an alias"
     (let [decl     '(ns some.namespace.core
                       (:require [some.namespace.core :as foo]))

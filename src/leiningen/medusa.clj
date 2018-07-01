@@ -4,7 +4,7 @@
             [leiningen.core.project :as project]))
 
 (def ^:private medusa-profile
-  {:dependencies '[[org.clojars.lassemaatta/lein-medusa "0.1.1"]]})
+  {:dependencies '[[org.clojars.lassemaatta/lein-medusa "0.1.2-SNAPSHOT"]]})
 
 (def ^:private cli-options
   [["-H" "--help"

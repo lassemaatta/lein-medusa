@@ -37,7 +37,6 @@
   "I parse re-frame sources and provide graphs"
   [project & args]
   (let [{:keys [options summary errors]} (cli/parse-opts args cli-options)]
-    ;(println errors)
     (cond
       ; Check for errors
       (some? errors)

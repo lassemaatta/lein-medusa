@@ -15,4 +15,6 @@
                                     [org.clojure/tools.nrepl "0.2.13"]
                                     [leiningen-core "2.8.1"]
                                     [expound "0.7.1"]]
-                   :resource-paths ["test/resources"]}})
+                   :resource-paths ["test/resources"]}}
+
+  :eastwood {:exclude-namespaces [leiningen.medusa]})

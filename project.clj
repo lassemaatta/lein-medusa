@@ -3,7 +3,9 @@
   :url "https://github.com/lassemaatta/lein-medusa"
   :license {:name "Eclipse Public License"
             :url  "http://www.eclipse.org/legal/epl-v10.html"}
-  :dependencies [[org.clojure/tools.cli "0.3.7"]
+  :dependencies [[org.clojure/core.specs.alpha "0.2.36"]
+                 [org.clojure/core.match "0.3.0-alpha5"]
+                 [org.clojure/tools.cli "0.3.7"]
                  [org.clojure/tools.reader "1.3.0"]
                  [org.clojure/tools.namespace "0.3.0-alpha4"]
                  [macroz/tangle "0.2.0"]]

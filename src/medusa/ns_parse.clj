@@ -1,84 +1,68 @@
 (ns medusa.ns-parse
   "Based on clojure.tools.namespace.parse but unlike deps-from-ns-decl
-  returns deps as a map")
+  returns deps as a map"
+  (:require [clojure.spec.alpha :as s]
+            [clojure.core.specs.alpha :as core-specs]
+            [clojure.core.match :as core-match]))
 
-(defn- prefix-spec?
-  "Returns true if form represents a libspec prefix list like
-  (prefix name1 name1) or [com.example.prefix [name1 :as name1]]"
+(defn- add-prefix [prefix mapping]
+  (let [lib   (first (vals mapping))
+        alias (first (keys mapping))
+        ns    (symbol (str prefix "." lib))]
+    [alias ns]))
+
+(defn- match-lib+opts
+  [lib+opts]
+  (core-match/match [lib+opts]
+    [{:lib lib :options {:as alias}}]
+    {alias lib}
+
+    :else nil))
+
+(defn- match-libspec
+  [libspec]
+  (core-match/match [libspec]
+    [([:lib+opts opts] :seq)]
+    (match-lib+opts opts)))
+
+(defn- match-prefix-list
+  [prefix-list]
+  (core-match/match [prefix-list]
+    [{:prefix ns :libspecs libspecs}]
+    (->> libspecs
+         (map match-libspec)
+         (map (partial add-prefix ns))
+         (into {}))))
+
+(defn match-body
+  [body]
+  (core-match/match [body]
+    [([:libspec libspec] :seq)]
+    (match-libspec libspec)
+
+    [([:prefix-list prefix-list] :seq)]
+    (match-prefix-list prefix-list)))
+
+(defn match-clauses
+  [clause]
+  (core-match/match [clause]
+    [([:require {:clause :require
+                 :body   body}] :seq)]
+    (mapcat match-body body)))
+
+(defn match-ns-form
   [form]
-  (and (sequential? form)                                   ; should be a list, but often is not
-       (symbol? (first form))
-       (not-any? keyword? form)
-       (< 1 (count form))))                                 ; not a bare vector like [foo]
+  (core-match/match [form]
+    [{:name _ :clauses clauses}]
+    (mapcat match-clauses clauses)
 
-(defn- alias-spec?
-  "Returns true if form represents a libspec like [namespace :as alias]"
-  [form]
-  (and (sequential? form)
-       (symbol? (first form))
-       (= :as (second form))))
+    :else nil))
 
-(defn- js-spec?
-  [form]
-  "Returns true if form represents a libspec like [\"some-js-lib\" :as alias]"
-  (and (sequential? form)
-       (string? (first form))
-       (< 1 (count form))))
-
-(defn- kw-spec?
-  "Returns true if form represents a libspec vector containing optional
-  keyword arguments like [namespace :as alias] or
-  [namespace :refer (x y)] or just [namespace]"
-  [form]
-  (and (sequential? form)
-       (symbol? (first form))
-       (or (= 1 (count form))
-           (keyword? (second form)))))
-
-(defn- lib-name [prefix form]
-  (if prefix
-    (symbol (str prefix "." (first form)))
-    (first form)))
-
-(defn- deps-from-libspec [prefix form]
-  (cond (prefix-spec? form)
-        (into [] (mapcat (fn [f] (deps-from-libspec
-                                   (lib-name prefix form)
-                                   f))
-                         (rest form)))
-        (alias-spec? form)
-        (let [lib-name (lib-name prefix form)
-              alias    (nth form 2)]
-          [alias lib-name])
-        (js-spec? form) nil
-        (kw-spec? form) nil
-        (symbol? form) nil
-        (keyword? form) nil
-        :else
-        (throw (ex-info "Unparsable namespace form"
-                        {:reason ::unparsable-ns-form
-                         :form   form}))))
-
-(def ^:private ns-clause-head-names
-  "Set of symbol/keyword names which can appear as the head of a
-  clause in the ns form."
-  #{"use" "require"})
-
-(def ^:private ns-clause-heads
-  "Set of all symbols and keywords which can appear at the head of a
-  dependency clause in the ns form."
-  (set (mapcat (fn [name] (list (keyword name)
-                                (symbol name)))
-               ns-clause-head-names)))
-
-(defn- deps-from-ns-form [form]
-  (when (and (sequential? form)                             ; should be list but sometimes is not
-             (contains? ns-clause-heads (first form)))
-    (map #(deps-from-libspec nil %) (rest form))))
-
-(defn aliases-from-ns-decl
-  "Given an (ns...) declaration form (unevaluated), returns a map of
-  symbols naming the dependencies of that namespace.  Handles :use and
-  :require clauses but not :load."
-  [decl]
-  (into {} (mapcat deps-from-ns-form decl)))
+(defn aliases-from-ns-decl [decl]
+  (let [form (rest decl)]
+    (if-not (s/valid? ::core-specs/ns-form form)
+      {}
+      (->> form
+           (s/conform ::core-specs/ns-form)
+           (match-ns-form)
+           (merge-with into {})))))

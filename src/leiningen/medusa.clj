@@ -31,7 +31,7 @@
 (defn- display-errors
   [errors]
   (println "Error parsing arguments:")
-  (dorun (map println errors)))
+  (run! println errors))
 
 (defn medusa
   "I parse re-frame sources and provide graphs"

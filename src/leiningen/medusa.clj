@@ -31,13 +31,12 @@
 (defn- display-errors
   [errors]
   (println "Error parsing arguments:")
-  (dorun (map println errors)))
+  (run! println errors))
 
 (defn medusa
   "I parse re-frame sources and provide graphs"
   [project & args]
   (let [{:keys [options summary errors]} (cli/parse-opts args cli-options)]
-    ;(println errors)
     (cond
       ; Check for errors
       (some? errors)

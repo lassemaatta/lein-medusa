@@ -64,9 +64,12 @@
 
   (testing "[lib :as alias] provides an alias"
     (let [decl     '(ns some.namespace.core
-                      (:require [some.namespace [core :as foo]]))
+                      (:require [some.namespace
+                                 [core :as c]
+                                 [utils :as u]]))
           aliases  (ns-parse/aliases-from-ns-decl decl)
-          expected {'foo 'some.namespace.core}]
+          expected {'c 'some.namespace.core
+                    'u 'some.namespace.utils}]
       (is (= aliases expected))))
 
   (testing "mixing different styles provides aliases"
@@ -75,10 +78,13 @@
                                 [some.namespace.with.refer :refer [zed]]
                                 [namespace.without.alias.core]
                                 [referring.namespace.core :refer :all]
-                                [some.prefixing.namespace [core :as bob]]
+                                [some.prefixing.namespace
+                                 [core :as c]
+                                 [utils :as u]]
                                 [another.namespace :as bar]))
           aliases  (ns-parse/aliases-from-ns-decl decl)
           expected {'foo 'some.namespace.core
                     'bar 'another.namespace
-                    'bob 'some.prefixing.namespace.core}]
+                    'c   'some.prefixing.namespace.core
+                    'u   'some.prefixing.namespace.utils}]
       (is (= aliases expected)))))
